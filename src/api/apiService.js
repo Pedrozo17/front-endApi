@@ -1,61 +1,52 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const BASE_URL = "http://192.168.40.38/api/"; 
+const BASE_URL = "http://192.168.40.38:8000/api/";
 
+// 🔐 LOGIN
 export const loginService = async (email, password) => {
-    try {
-        const response = await fetch(`${BASE_URL}auth/login/`, {
-            method: "POST",
+    const response = await fetch(`${BASE_URL}auth/login/`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.error || "Error al iniciar sesión");
+    }
+
+    return data;
+};
+
+// 📋 TAREAS
+export const taskApiService = {
+    getAll: (token) => fetch(`${BASE_URL}tareas/`, {
+        headers: {
+            'Authorization': `Bearer ${token}` // ✅ CORREGIDO
+        }
+    }).then(res => res.json()),
+};
+
+// 👤 PERFIL (NUEVO)
+export const perfilService = {
+    getPerfil: async (token) => {
+        const response = await fetch(`${BASE_URL}perfil/`, {
             headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ email, password }),
+                'Authorization': `Bearer ${token}`
+            }
         });
 
         const data = await response.json();
 
         if (!response.ok) {
-            throw new Error(data.error || "Error al iniciar sesión");
+            throw new Error("Error al obtener perfil");
         }
 
-        return data; // debe traer { token: "..." }
-    } catch (error) {
-        throw error;
+        return data;
     }
-};
-
-
-// 📋 OBTENER TAREAS
-export const taskApiService = {
-    getAll: (token) => fetch(`${BASE_URL}/tareas/`,{
-        headers:{
-            'Authorization' : `Bearer${token}`
-        }
-    }).then(res => res.json()),
-
-    create: (token, data) => fetch(`${BASE_URL}/tareas/`,{
-        headers:{
-            'Authorization' : `Bearer${token}`,
-            'Content-Type' : 'application/json'
-        },
-        body: JSON.stringify(data)
-    }).then(res => res.json()),
-
-    update: (token, id, data) => fetch(`${BASE_URL}/tareas/${id}`,{
-        method : 'PUT',
-        headers:{
-            'Authorization' : `Bearer${token}`,
-            'Content-Type' : 'application/json'
-        },
-        body: JSON.stringify(data)
-    }).then(res => res.json()),
-
-    delete:(token, id) => fetch(`${BASE_URL}/tareas/${id}`,{
-        method : 'DELETE',
-        headers:{
-            'Authorization' : `Bearer${token}`,
-        },
-    })
 };
 
 
