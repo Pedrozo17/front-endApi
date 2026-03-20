@@ -5,8 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { perfilService } from "../api/apiService";
 
 const HomeScreen = ({ navigation }) => {
-    const { logout } = useContext(AuthContext);
-
+    const { logout, userToken } = useContext(AuthContext); // 👈 agrega userToken
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -14,10 +13,10 @@ const HomeScreen = ({ navigation }) => {
         cargarPerfil();
     }, []);
 
-    const cargarPerfil = async () => {
+   const cargarPerfil = async () => {
         try {
-            const token = await AsyncStorage.getItem("token");
-            const data = await perfilService.getPerfil(token);
+            // ✅ usa el token del contexto, no AsyncStorage
+            const data = await perfilService.getPerfil(userToken);
             setUser(data);
         } catch (error) {
             console.log("Error perfil:", error);
@@ -37,7 +36,7 @@ const HomeScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            
+
             {/* HEADER */}
             <View style={styles.header}>
                 <Text style={styles.welcome}>Inicio - ADSO</Text>
@@ -47,34 +46,36 @@ const HomeScreen = ({ navigation }) => {
             <View style={styles.profileCard}>
                 <Image
                     source={{
-                        uri: user?.foto || "https://via.placeholder.com/100"
+                        uri:user?.foto && user?.foto !== "sin foto"
+                            ? user?.foto
+                            : "https://via.placeholder.com/100"
                     }}
                     style={styles.avatar}
                 />
 
                 <View>
                     <Text style={styles.name}>
-                        {user?.nombre || "Usuario ADSO"}
+                        {user?.nombre || user?.email || "Usuario"}
                     </Text>
                     <Text style={styles.role}>
-                        {user?.rol || "USUARIO"}
+                        {(user?.rol || "aprendiz").toUpperCase()}
                     </Text>
                 </View>
             </View>
 
             {/* OPCIONES */}
             <View style={styles.menuGrid}>
-                
-                <TouchableOpacity 
-                    style={styles.card} 
+
+                <TouchableOpacity
+                    style={styles.card}
                     onPress={() => navigation.navigate('Tasks')}
                 >
                     <Text style={styles.cardIcon}>📋</Text>
                     <Text style={styles.cardText}>Mis Tareas</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity 
-                    style={styles.card} 
+                <TouchableOpacity
+                    style={styles.card}
                     onPress={() => navigation.navigate('CambiarFoto')}
                 >
                     <Text style={styles.cardIcon}>📷</Text>

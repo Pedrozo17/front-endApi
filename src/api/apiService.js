@@ -10,9 +10,13 @@ export const loginService = async (email, password) => {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({ email, password }),
-    });
+    }); 
 
     const data = await response.json();
+
+    console.log("STATUS:", response.status); // 👈
+    console.log("DATA:", data); // 👈
+    console.log("URL:", `${BASE_URL}perfil/`);
 
     if (!response.ok) {
         throw new Error(data.error || "Error al iniciar sesión");
@@ -32,21 +36,22 @@ export const taskApiService = {
 
 // 👤 PERFIL (NUEVO)
 export const perfilService = {
-    getPerfil: async (token) => {
-        const response = await fetch(`${BASE_URL}perfil/`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error("Error al obtener perfil");
+getPerfil: async (token) => {
+    const response = await fetch(`${BASE_URL}perfil/`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
         }
+    });
 
-        return data;
+    const data = await response.json();
+
+    if (!response.ok) {
+        console.error('Error perfil detalle:', data); // 👈 agrega esto
+        throw new Error(data?.detail || data?.mensaje || "Error al obtener perfil");
     }
+
+    return data;
+}
 };
 
 
