@@ -1,10 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const BASE_URL = "http://172.20.10.2/api/"; 
-// ⚠️ Cambia esto por la IP de tu PC (NO uses 127.0.0.1 en celular)
+const BASE_URL = "http://192.168.40.38/api/"; 
 
-
-// 🔐 LOGIN
 export const loginService = async (email, password) => {
     try {
         const response = await fetch(`${BASE_URL}auth/login/`, {
