@@ -7,7 +7,9 @@ import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {AuthProvider, AuthContext} from "./src/context/authContext";
 
 import LoginScreen from "./src/screens/LoginScreen";
-import HomeScreen from "./src/screens/HomeScreen"; // 👈 ojo aquí
+import HomeScreen from "./src/screens/HomeScreen";
+import TasksScreen from "./src/screens/TasksScreen";         // 👈 nuevo
+import CambiarFotoScreen from "./src/screens/CambiarFotoScreen"; // 👈 nuevo
 
 const Stack = createNativeStackNavigator();
 
@@ -27,7 +29,11 @@ const AppNav = () => {
             <Stack.Navigator screenOptions={{headerShown: false}}>
                 
                 {userToken ? (
-                    <Stack.Screen name="HomeScreen" component={HomeScreen}/>
+                    <>
+                        <Stack.Screen name="HomeScreen" component={HomeScreen}/>
+                        <Stack.Screen name="Tasks" component={TasksScreen}/>           {/* 👈 */}
+                        <Stack.Screen name="CambiarFoto" component={CambiarFotoScreen}/> {/* 👈 */}
+                    </>
                 ) : (
                     <Stack.Screen name="Login" component={LoginScreen}/>
                 )}
