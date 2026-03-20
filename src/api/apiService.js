@@ -26,13 +26,31 @@ export const loginService = async (email, password) => {
 };
 
 // 📋 TAREAS
-export const taskApiService = {
-    getAll: (token) => fetch(`${BASE_URL}tareas/`, {
-        headers: {
-            'Authorization': `Bearer ${token}` // ✅ CORREGIDO
-        }
-    }).then(res => res.json()),
+export const tareasService = {
+    getTareas: async (token) => {
+        const response = await fetch(`${BASE_URL}tareas/`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data?.detail || 'Error al obtener tareas');
+        return data;
+    },
+
+    crearTarea: async (token, titulo, descripcion) => {
+        const response = await fetch(`${BASE_URL}tareas/`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ titulo, descripcion })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data?.detail || 'Error al crear tarea');
+        return data;
+    }
 };
+
 
 // 👤 PERFIL (NUEVO)
 export const perfilService = {
