@@ -51,6 +51,29 @@ export const tareasService = {
     }
 };
 
+// 📷 FOTO
+export const fotoService = {
+    cambiarFoto: async (token, imageUri) => {
+        const formData = new FormData();
+        formData.append('imagen', {
+            uri: imageUri,
+            name: 'foto.jpg',
+            type: 'image/jpeg'
+        });
+
+        const response = await fetch(`${BASE_URL}perfil/foto/`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data'
+            },
+            body: formData
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data?.detail || 'Error al cambiar foto');
+        return data;
+    }
+};
 
 // 👤 PERFIL (NUEVO)
 export const perfilService = {
