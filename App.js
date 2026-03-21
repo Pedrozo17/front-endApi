@@ -25,22 +25,21 @@ const AppNav = () => {
     }
 
     return (
-        <NavigationContainer>
-            <Stack.Navigator screenOptions={{headerShown: false}}>
-                
-                {userToken ? (
-                    <>
-                        <Stack.Screen name="HomeScreen" component={HomeScreen}/>
-                        <Stack.Screen name="Tasks" component={TasksScreen}/>           {/* 👈 */}
-                        <Stack.Screen name="CambiarFoto" component={CambiarFotoScreen}/> {/* 👈 */}
-                    </>
-                ) : (
-                    <Stack.Screen name="Login" component={LoginScreen}/>
-                )}
-
-            </Stack.Navigator>
-        </NavigationContainer>
-    );
+    <NavigationContainer>
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+            {userToken ? (
+                // ✅ Stack.Group sí está permitido como hijo directo
+                <Stack.Group>
+                    <Stack.Screen name="HomeScreen" component={HomeScreen}/>
+                    <Stack.Screen name="Tasks" component={TasksScreen}/>
+                    <Stack.Screen name="CambiarFoto" component={CambiarFotoScreen}/>
+                </Stack.Group>
+            ) : (
+                <Stack.Screen name="Login" component={LoginScreen}/>
+            )}
+        </Stack.Navigator>
+    </NavigationContainer>
+);
 };
 
 export default function App() {

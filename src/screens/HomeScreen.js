@@ -4,6 +4,7 @@ import { AuthContext } from "../context/authContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { perfilService } from "../api/apiService";
 
+
 const HomeScreen = ({ navigation }) => {
     const { logout, userToken } = useContext(AuthContext); // 👈 agrega userToken
     const [user, setUser] = useState(null);
