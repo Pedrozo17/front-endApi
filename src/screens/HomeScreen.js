@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image, ActivityIndicator } from "react-native";
+import { useFocusEffect } from '@react-navigation/native'; // 👈 agrega este import
+import { useCallback } from 'react'; // 👈 y este
 import { AuthContext } from "../context/authContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { perfilService } from "../api/apiService";
@@ -10,9 +12,11 @@ const HomeScreen = ({ navigation }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
+    useFocusEffect(
+    useCallback(() => {
         cargarPerfil();
-    }, []);
+    }, [userToken])
+);
 
    const cargarPerfil = async () => {
         try {
