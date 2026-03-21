@@ -1,26 +1,22 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image, ActivityIndicator } from "react-native";
-import { useFocusEffect } from '@react-navigation/native'; // 👈 agrega este import
-import { useCallback } from 'react'; // 👈 y este
+import { useFocusEffect } from '@react-navigation/native';
 import { AuthContext } from "../context/authContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { perfilService } from "../api/apiService";
 
-
 const HomeScreen = ({ navigation }) => {
-    const { logout, userToken } = useContext(AuthContext); // 👈 agrega userToken
+    const { logout, userToken } = useContext(AuthContext);
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useFocusEffect(
-    useCallback(() => {
-        cargarPerfil();
-    }, [userToken])
-);
+        useCallback(() => {
+            cargarPerfil();
+        }, [userToken])
+    );
 
-   const cargarPerfil = async () => {
+    const cargarPerfil = async () => {
         try {
-            // ✅ usa el token del contexto, no AsyncStorage
             const data = await perfilService.getPerfil(userToken);
             setUser(data);
         } catch (error) {
@@ -33,8 +29,8 @@ const HomeScreen = ({ navigation }) => {
     if (loading) {
         return (
             <View style={styles.center}>
-                <ActivityIndicator size="large" />
-                <Text>Cargando...</Text>
+                <ActivityIndicator size="large" color="#4F46E5" />
+                <Text style={styles.loadingText}>Cargando...</Text>
             </View>
         );
     }
@@ -44,54 +40,58 @@ const HomeScreen = ({ navigation }) => {
 
             {/* HEADER */}
             <View style={styles.header}>
-                <Text style={styles.welcome}>Inicio - ADSO</Text>
+                <Text style={styles.headerTitulo}>Inicio - ADSO</Text>
+                <Text style={styles.headerSub}>Bienvenido de nuevo 👋</Text>
             </View>
 
             {/* PERFIL */}
-            <View style={styles.profileCard}>
+            <View style={styles.card}>
                 <Image
                     source={{
-                        uri:user?.foto && user?.foto !== "sin foto"
+                        uri: user?.foto && user?.foto !== "sin foto"
                             ? user?.foto
                             : "https://via.placeholder.com/100"
                     }}
                     style={styles.avatar}
                 />
-
-                <View>
-                    <Text style={styles.name}>
+                <View style={styles.perfilInfo}>
+                    <Text style={styles.cardTitulo}>
                         {user?.nombre || user?.email || "Usuario"}
                     </Text>
-                    <Text style={styles.role}>
+                    <Text style={styles.cardEstado}>
                         {(user?.rol || "aprendiz").toUpperCase()}
                     </Text>
                 </View>
             </View>
 
-            {/* OPCIONES */}
-            <View style={styles.menuGrid}>
+            {/* MENU */}
+            <Text style={styles.titulo}>Accesos rápidos</Text>
 
-                <TouchableOpacity
-                    style={styles.card}
-                    onPress={() => navigation.navigate('Tasks')}
-                >
-                    <Text style={styles.cardIcon}>📋</Text>
-                    <Text style={styles.cardText}>Mis Tareas</Text>
-                </TouchableOpacity>
+            <TouchableOpacity
+                style={styles.menuCard}
+                onPress={() => navigation.navigate('Tasks')}
+            >
+                <Text style={styles.menuIcon}>📋</Text>
+                <View>
+                    <Text style={styles.cardTitulo}>Mis Tareas</Text>
+                    <Text style={styles.cardDesc}>Ver y gestionar tus tareas</Text>
+                </View>
+            </TouchableOpacity>
 
-                <TouchableOpacity
-                    style={styles.card}
-                    onPress={() => navigation.navigate('CambiarFoto')}
-                >
-                    <Text style={styles.cardIcon}>📷</Text>
-                    <Text style={styles.cardText}>Cambiar Foto</Text>
-                </TouchableOpacity>
-
-            </View>
+            <TouchableOpacity
+                style={styles.menuCard}
+                onPress={() => navigation.navigate('CambiarFoto')}
+            >
+                <Text style={styles.menuIcon}>📷</Text>
+                <View>
+                    <Text style={styles.cardTitulo}>Cambiar Foto</Text>
+                    <Text style={styles.cardDesc}>Actualiza tu foto de perfil</Text>
+                </View>
+            </TouchableOpacity>
 
             {/* LOGOUT */}
-            <TouchableOpacity onPress={logout}>
-                <Text style={styles.logout}>Cerrar Sesión</Text>
+            <TouchableOpacity style={styles.botonLogout} onPress={logout}>
+                <Text style={styles.botonLogoutText}>Cerrar Sesión</Text>
             </TouchableOpacity>
 
         </View>
@@ -99,76 +99,63 @@ const HomeScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#f0f2f5',
-    },
+    container: { flex: 1, backgroundColor: '#F9FAFB' },
+    center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+    loadingText: { marginTop: 10, color: '#6B7280' },
+
+    // Header
     header: {
-        backgroundColor: 'green',
-        padding: 20,
-        marginBottom: 10
+        backgroundColor: '#4F46E5',
+        padding: 24,
+        paddingTop: 50,
+        marginBottom: 20
     },
-    welcome: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#fff'
-    },
-    profileCard: {
-        flexDirection: 'row',
-        backgroundColor: '#fff',
-        margin: 20,
-        padding: 15,
-        borderRadius: 15,
-        alignItems: 'center',
-        elevation: 4
-    },
-    avatar: {
-        width: 70,
-        height: 70,
-        borderRadius: 35,
-        marginRight: 15
-    },
-    name: {
-        fontSize: 18,
-        fontWeight: 'bold'
-    },
-    role: {
-        color: 'green',
-        fontWeight: 'bold'
-    },
-    menuGrid: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        marginTop: 20
-    },
+    headerTitulo: { fontSize: 22, fontWeight: 'bold', color: '#fff' },
+    headerSub: { fontSize: 13, color: '#C7D2FE', marginTop: 4 },
+
+    // Perfil card
     card: {
         backgroundColor: '#fff',
-        width: 140,
-        height: 120,
-        borderRadius: 15,
-        justifyContent: 'center',
+        borderRadius: 12,
+        padding: 16,
+        marginHorizontal: 20,
+        marginBottom: 20,
+        flexDirection: 'row',
         alignItems: 'center',
-        elevation: 4
+        elevation: 2
     },
-    cardIcon: {
-        fontSize: 30,
-        marginBottom: 10
+    avatar: { width: 64, height: 64, borderRadius: 32, marginRight: 16 },
+    perfilInfo: { flex: 1 },
+
+    // Textos reutilizables (igual que TasksScreen)
+    titulo: { fontSize: 22, fontWeight: 'bold', marginBottom: 12, color: '#1F2937', paddingHorizontal: 20 },
+    cardTitulo: { fontSize: 16, fontWeight: 'bold', color: '#1F2937' },
+    cardDesc: { fontSize: 13, color: '#6B7280', marginTop: 2 },
+    cardEstado: { marginTop: 4, fontSize: 11, color: '#4F46E5', fontWeight: 'bold' },
+
+    // Menu cards
+    menuCard: {
+        backgroundColor: '#fff',
+        borderRadius: 12,
+        padding: 16,
+        marginHorizontal: 20,
+        marginBottom: 12,
+        flexDirection: 'row',
+        alignItems: 'center',
+        elevation: 2
     },
-    cardText: {
-        fontWeight: 'bold',
-        color: '#333'
-    },
-    logout: {
-        textAlign: 'center',
-        marginTop: 40,
-        color: 'red',
-        fontWeight: 'bold'
-    },
-    center: {
-        flex: 1,
-        justifyContent: 'center',
+    menuIcon: { fontSize: 28, marginRight: 16 },
+
+    // Logout
+    botonLogout: {
+        marginHorizontal: 20,
+        marginTop: 20,
+        backgroundColor: '#FEE2E2',
+        padding: 14,
+        borderRadius: 12,
         alignItems: 'center'
-    }
+    },
+    botonLogoutText: { color: '#EF4444', fontWeight: 'bold', fontSize: 15 }
 });
 
 export default HomeScreen;
