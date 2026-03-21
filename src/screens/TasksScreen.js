@@ -22,7 +22,8 @@ const TasksScreen = () => {
         try {
             setLoading(true);
             const data = await tareasService.getTareas(userToken);
-            setTareas(data);
+            console.log('TAREAS:', JSON.stringify(data)); // 👈 agrega esto
+            setTareas(data.datos);
         } catch (error) {
             Alert.alert('Error', error.message);
         } finally {
