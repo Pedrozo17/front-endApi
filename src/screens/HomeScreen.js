@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image, ActivityIndicator } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context'; // 👈 agrega
 import { useFocusEffect } from '@react-navigation/native';
 import { AuthContext } from "../context/authContext";
 import { perfilService } from "../api/apiService";
@@ -36,69 +37,72 @@ const HomeScreen = ({ navigation }) => {
     }
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.safeArea}>
+            <View style={styles.container}>
 
-            {/* HEADER */}
-            <View style={styles.header}>
-                <Text style={styles.headerTitulo}>Inicio - ADSO</Text>
-                <Text style={styles.headerSub}>Bienvenido de nuevo 👋</Text>
+                {/* HEADER */}
+                <View style={styles.header}>
+                    <Text style={styles.headerTitulo}>Inicio - ADSO</Text>
+                    <Text style={styles.headerSub}>Bienvenido de nuevo 👋</Text>
+                </View>
+
+                {/* PERFIL */}
+                <View style={styles.card}>
+                    <Image
+                        source={{
+                            uri: user?.foto && user?.foto !== "sin foto"
+                                ? user?.foto
+                                : "https://via.placeholder.com/100"
+                        }}
+                        style={styles.avatar}
+                    />
+                    <View style={styles.perfilInfo}>
+                        <Text style={styles.cardTitulo}>
+                            {user?.nombre || user?.email || "Usuario"}
+                        </Text>
+                        <Text style={styles.cardEstado}>
+                            {(user?.rol || "aprendiz").toUpperCase()}
+                        </Text>
+                    </View>
+                </View>
+
+                {/* MENU */}
+                <Text style={styles.titulo}>Accesos rápidos</Text>
+
+                <TouchableOpacity
+                    style={styles.menuCard}
+                    onPress={() => navigation.navigate('Tasks')}
+                >
+                    <Text style={styles.menuIcon}>📋</Text>
+                    <View>
+                        <Text style={styles.cardTitulo}>Mis Tareas</Text>
+                        <Text style={styles.cardDesc}>Ver y gestionar tus tareas</Text>
+                    </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={styles.menuCard}
+                    onPress={() => navigation.navigate('CambiarFoto')}
+                >
+                    <Text style={styles.menuIcon}>📷</Text>
+                    <View>
+                        <Text style={styles.cardTitulo}>Cambiar Foto</Text>
+                        <Text style={styles.cardDesc}>Actualiza tu foto de perfil</Text>
+                    </View>
+                </TouchableOpacity>
+
+                {/* LOGOUT */}
+                <TouchableOpacity style={styles.botonLogout} onPress={logout}>
+                    <Text style={styles.botonLogoutText}>Cerrar Sesión</Text>
+                </TouchableOpacity>
+
             </View>
-
-            {/* PERFIL */}
-            <View style={styles.card}>
-                <Image
-                    source={{
-                        uri: user?.foto && user?.foto !== "sin foto"
-                            ? user?.foto
-                            : "https://via.placeholder.com/100"
-                    }}
-                    style={styles.avatar}
-                />
-                <View style={styles.perfilInfo}>
-                    <Text style={styles.cardTitulo}>
-                        {user?.nombre || user?.email || "Usuario"}
-                    </Text>
-                    <Text style={styles.cardEstado}>
-                        {(user?.rol || "aprendiz").toUpperCase()}
-                    </Text>
-                </View>
-            </View>
-
-            {/* MENU */}
-            <Text style={styles.titulo}>Accesos rápidos</Text>
-
-            <TouchableOpacity
-                style={styles.menuCard}
-                onPress={() => navigation.navigate('Tasks')}
-            >
-                <Text style={styles.menuIcon}>📋</Text>
-                <View>
-                    <Text style={styles.cardTitulo}>Mis Tareas</Text>
-                    <Text style={styles.cardDesc}>Ver y gestionar tus tareas</Text>
-                </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-                style={styles.menuCard}
-                onPress={() => navigation.navigate('CambiarFoto')}
-            >
-                <Text style={styles.menuIcon}>📷</Text>
-                <View>
-                    <Text style={styles.cardTitulo}>Cambiar Foto</Text>
-                    <Text style={styles.cardDesc}>Actualiza tu foto de perfil</Text>
-                </View>
-            </TouchableOpacity>
-
-            {/* LOGOUT */}
-            <TouchableOpacity style={styles.botonLogout} onPress={logout}>
-                <Text style={styles.botonLogoutText}>Cerrar Sesión</Text>
-            </TouchableOpacity>
-
-        </View>
+        </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
+    safeArea: { flex: 1, backgroundColor: '#4F46E5' },
     container: { flex: 1, backgroundColor: '#F9FAFB' },
     center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     loadingText: { marginTop: 10, color: '#6B7280' },
