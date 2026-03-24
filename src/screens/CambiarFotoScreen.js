@@ -3,6 +3,7 @@ import {
     View, Text, Image, TouchableOpacity,
     StyleSheet, Alert, ActivityIndicator
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 import { AuthContext } from '../context/authContext';
 import { fotoService } from '../api/apiService';
@@ -46,32 +47,35 @@ const CambiarFotoScreen = ({ navigation }) => {
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.titulo}>📷 Cambiar Foto</Text>
+        <SafeAreaView style={styles.safeArea}>
+            <View style={styles.container}>
+                <Text style={styles.titulo}>📷 Cambiar Foto</Text>
 
-            <TouchableOpacity style={styles.preview} onPress={seleccionarFoto}>
-                {imageUri ? (
-                    <Image source={{ uri: imageUri }} style={styles.imagen} />
-                ) : (
-                    <Text style={styles.placeholder}>Toca para seleccionar foto</Text>
-                )}
-            </TouchableOpacity>
+                <TouchableOpacity style={styles.preview} onPress={seleccionarFoto}>
+                    {imageUri ? (
+                        <Image source={{ uri: imageUri }} style={styles.imagen} />
+                    ) : (
+                        <Text style={styles.placeholder}>Toca para seleccionar foto</Text>
+                    )}
+                </TouchableOpacity>
 
-            <TouchableOpacity
-                style={[styles.boton, !imageUri && styles.botonDeshabilitado]}
-                onPress={handleSubir}
-                disabled={!imageUri || subiendo}
-            >
-                {subiendo
-                    ? <ActivityIndicator color="#fff" />
-                    : <Text style={styles.botonText}>Subir Foto</Text>
-                }
-            </TouchableOpacity>
-        </View>
+                <TouchableOpacity
+                    style={[styles.boton, !imageUri && styles.botonDeshabilitado]}
+                    onPress={handleSubir}
+                    disabled={!imageUri || subiendo}
+                >
+                    {subiendo
+                        ? <ActivityIndicator color="#fff" />
+                        : <Text style={styles.botonText}>Subir Foto</Text>
+                    }
+                </TouchableOpacity>
+            </View>
+        </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
+    safeArea: { flex: 1, backgroundColor: '#4F46E5' },
     container: { flex: 1, alignItems: 'center', padding: 30, backgroundColor: '#F9FAFB' },
     titulo: { fontSize: 22, fontWeight: 'bold', marginBottom: 30, color: '#1F2937' },
     preview: {

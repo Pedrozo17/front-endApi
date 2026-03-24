@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const BASE_URL = "http://192.168.40.38:8000/api/";
+const BASE_URL = "http://10.87.155.28:8000/api/";
 
 // 🔐 LOGIN
 export const loginService = async (email, password) => {
@@ -48,8 +48,34 @@ export const tareasService = {
         const data = await response.json();
         if (!response.ok) throw new Error(data?.detail || 'Error al crear tarea');
         return data;
-    }
+ },
+
+    editarTarea: async (token, tareaId, titulo, descripcion, estado) => {
+    const response = await fetch(`${BASE_URL}tareas/${tareaId}/`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ titulo, descripcion, estado })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data?.detail || 'Error al editar tarea');
+    return data;
+},
+
+eliminarTarea: async (token, tareaId) => {
+    const response = await fetch(`${BASE_URL}tareas/${tareaId}/`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data?.detail || 'Error al eliminar tarea');
+    return data;
+}
 };
+
+
 
 // 📷 FOTO
 export const fotoService = {
