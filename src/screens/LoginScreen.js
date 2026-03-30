@@ -18,7 +18,7 @@ const LoginScreen = () => {
         setLoading(true);
         try {
             const data = await loginService(email, password);
-            await login(data.token);
+            await login(data.token, data.uid);
         } catch (e) {
             Alert.alert("Error de login", e.message);
         } finally {

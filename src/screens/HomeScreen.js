@@ -91,6 +91,17 @@ const HomeScreen = ({ navigation }) => {
                     </View>
                 </TouchableOpacity>
 
+                <TouchableOpacity
+                    style={styles.menuCard}
+                    onPress={() => navigation.navigate('Chat')}
+                >
+                    <Text style={styles.menuIcon}>💬</Text>
+                    <View>
+                        <Text style={styles.cardTitulo}>Chat</Text>
+                        <Text style={styles.cardDesc}>Habla con todos los usuarios</Text>
+                    </View>
+                </TouchableOpacity>
+
                 {/* LOGOUT */}
                 <TouchableOpacity style={styles.botonLogout} onPress={logout}>
                     <Text style={styles.botonLogoutText}>Cerrar Sesión</Text>

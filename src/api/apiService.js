@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const BASE_URL = "http://10.87.155.28:8000/api/";
+const BASE_URL = "http://192.168.0.104:8000/api/";
 
 // 🔐 LOGIN
 export const loginService = async (email, password) => {
@@ -122,3 +122,15 @@ getPerfil: async (token) => {
 };
 
 
+export const getChatHistoryService = async (token) => {
+    try {
+        const response = await fetch(`${BASE_URL}chat/historial/`, {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) throw new Error('Error cargando historial de chat');
+        return await response.json();
+    } catch (error) {
+        throw error;
+    }
+};

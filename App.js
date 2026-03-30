@@ -10,6 +10,7 @@ import LoginScreen from "./src/screens/LoginScreen";
 import HomeScreen from "./src/screens/HomeScreen";
 import TasksScreen from "./src/screens/TasksScreen";         // 👈 nuevo
 import CambiarFotoScreen from "./src/screens/CambiarFotoScreen"; // 👈 nuevo
+import ChatScreen from "./src/screens/ChatScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -33,9 +34,11 @@ const AppNav = () => {
                     <Stack.Screen name="HomeScreen" component={HomeScreen}/>
                     <Stack.Screen name="Tasks" component={TasksScreen}/>
                     <Stack.Screen name="CambiarFoto" component={CambiarFotoScreen}/>
+                    <Stack.Screen name="Chat" component={ChatScreen}/>
                 </Stack.Group>
             ) : (
                 <Stack.Screen name="Login" component={LoginScreen}/>
+                
             )}
         </Stack.Navigator>
     </NavigationContainer>
